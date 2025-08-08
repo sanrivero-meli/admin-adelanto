@@ -481,15 +481,17 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
-            z-index: 1000;
+            z-index: 1500;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            visibility: hidden;
         }
 
         .mobile-bottom-sheet-overlay.active {
             opacity: 1;
             pointer-events: all;
+            visibility: visible;
         }
 
         .mobile-bottom-sheet {
@@ -506,10 +508,13 @@
             transform: translateY(100%);
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             padding-bottom: env(safe-area-inset-bottom);
+            z-index: 1501;
+            visibility: hidden;
         }
 
         .mobile-bottom-sheet.active {
             transform: translateY(0);
+            visibility: visible;
         }
 
         .sheet-header {
@@ -519,6 +524,7 @@
             top: 0;
             background: var(--bg-card);
             z-index: 10;
+            border-radius: 24px 24px 0 0;
         }
 
         .sheet-handle {
@@ -1147,15 +1153,41 @@
 
         // Mobile Bottom Sheet
         function showMobileBottomSheet() {
-            document.getElementById('mobileBottomSheetOverlay').classList.add('active');
-            document.getElementById('mobileBottomSheet').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            const overlay = document.getElementById('mobileBottomSheetOverlay');
+            const sheet = document.getElementById('mobileBottomSheet');
+            
+            if (overlay && sheet) {
+                // Force reflow to ensure initial state
+                overlay.style.display = 'block';
+                sheet.style.display = 'block';
+                
+                // Add classes after a brief delay to trigger animations
+                requestAnimationFrame(() => {
+                    overlay.classList.add('active');
+                    sheet.classList.add('active');
+                });
+                
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+            }
         }
 
         function hideMobileBottomSheet() {
-            document.getElementById('mobileBottomSheetOverlay').classList.remove('active');
-            document.getElementById('mobileBottomSheet').classList.remove('active');
-            document.body.style.overflow = '';
+            const overlay = document.getElementById('mobileBottomSheetOverlay');
+            const sheet = document.getElementById('mobileBottomSheet');
+            
+            if (overlay && sheet) {
+                overlay.classList.remove('active');
+                sheet.classList.remove('active');
+                
+                // Reset body styles after animation
+                setTimeout(() => {
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.width = '';
+                }, 400);
+            }
         }
 
         function confirmMobileAdelanto() {
@@ -1301,10 +1333,32 @@
             lastTouchEnd = now;
         }, false);
 
+        // Debug function to test bottom sheet
+        function testBottomSheet() {
+            console.log('Testing bottom sheet...');
+            const overlay = document.getElementById('mobileBottomSheetOverlay');
+            const sheet = document.getElementById('mobileBottomSheet');
+            console.log('Overlay element:', overlay);
+            console.log('Sheet element:', sheet);
+            
+            if (overlay && sheet) {
+                showMobileBottomSheet();
+            } else {
+                console.error('Bottom sheet elements not found!');
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Set initial state
             updateMobileProgress(1);
+            
+            // Test bottom sheet elements
+            console.log('DOM loaded, testing bottom sheet elements...');
+            const overlay = document.getElementById('mobileBottomSheetOverlay');
+            const sheet = document.getElementById('mobileBottomSheet');
+            console.log('Bottom sheet overlay:', overlay);
+            console.log('Bottom sheet:', sheet);
             
             // Add vibration feedback for touches (if supported)
             if ('vibrate' in navigator) {
@@ -1315,6 +1369,24 @@
                     }
                 });
             }
+            
+            // Add test button (remove in production)
+            const testButton = document.createElement('button');
+            testButton.textContent = 'Test Bottom Sheet';
+            testButton.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 10px;
+                z-index: 9999;
+                background: red;
+                color: white;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                font-size: 12px;
+            `;
+            testButton.onclick = testBottomSheet;
+            document.body.appendChild(testButton);
         });
     </script>
 </body>
