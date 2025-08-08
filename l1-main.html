@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L1 - Adelanto de Dinero</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e1e5e9;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #1d1d1f;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #007aff;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #424245;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #d1d1d6;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #007aff;
+        }
+
+        .simulator-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulator-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30px;
+            width: 100px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            transform: rotate(15deg);
+        }
+
+        .simulator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulator-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulator-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .value-item {
+            text-align: center;
+        }
+
+        .value-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .value-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transition: background 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .automation-section {
+            border-top: 1px solid #e1e5e9;
+            padding-top: 25px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #e1e5e9;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #34c759;
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(22px);
+        }
+
+        .settings-btn {
+            background: #f1f3f4;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .settings-btn:hover {
+            background: #e8eaed;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">← Volver al Hub</a>
+            <h1>💰 Adelanto de Dinero</h1>
+        </div>
+
+        <!-- L1 Left Panel -->
+        <div class="card">
+            <div class="section-title">¿Cuánto necesitas adelantar?</div>
+            
+            <div class="input-group">
+                <label class="input-label" for="amount">Ingresá el valor</label>
+                <input type="text" id="amount" class="input-field" placeholder="R$ 15.000" value="R$ 15.000">
+            </div>
+
+            <div class="section-title">Simulador de escenarios</div>
+            
+            <div class="simulator-card">
+                <div class="simulator-title">Adelantá R$ 15.000 en 7 días</div>
+                <div class="simulator-content">
+                    <div class="simulator-values">
+                        <div class="value-item">
+                            <div class="value-label">Recibís</div>
+                            <div class="value-amount">R$14.800</div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-label">Tasa calculada</div>
+                            <div class="value-amount">1,5%</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; font-size: 0.9rem; opacity: 0.9;">
+                        Descuento R$200
+                    </div>
+                </div>
+                <div class="progress-indicator">
+                    <div class="dot"></div>
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="openBottomSheet()">Adelantar</button>
+
+            <div class="automation-section">
+                <div class="section-title">Automatizá tus adelantos</div>
+                
+                <div class="toggle-container">
+                    <span>Sistema activo</span>
+                    <div class="toggle-switch active" onclick="toggleAutomation(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+
+                <button class="settings-btn" onclick="goToL2()">
+                    <span>⚙️</span>
+                    <span>Revisá tu automatización</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- L2 Right Panel Preview -->
+        <div class="card">
+            <div class="section-title">Reglas de automatización</div>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="font-weight: 500;">Emergencia crítica</span>
+                    <div class="toggle-switch active">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #666;">
+                    <strong>Se:</strong> saldo negativo en 48h<br>
+                    <strong>Entonces:</strong> Adelantar el mínimo necesario
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="font-weight: 500;">Oportunidad de tasa</span>
+                    <div class="toggle-switch active">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #666;">
+                    <strong>Se:</strong> tasa menor a 1,5%<br>
+                    <strong>Entonces:</strong> Sugerir adelanto
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <span style="font-weight: 500;">Pagamento programado</span>
+                    <div class="toggle-switch">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #666;">
+                    <strong>Se:</strong> hay una cuenta que vence en 3 días<br>
+                    <strong>Entonces:</strong> Adelantar valor de la cuenta
+                </div>
+            </div>
+
+            <button class="settings-btn" onclick="goToL2()">
+                <span>✏️</span>
+                <span>Personalizar reglas</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleAutomation(element) {
+            element.classList.toggle('active');
+        }
+
+        function openBottomSheet() {
+            window.location.href = 'bottom-sheet.html';
+        }
+
+        function goToL2() {
+            window.location.href = 'l2-automation.html';
+        }
+
+        // Simulate amount input changes
+        document.getElementById('amount').addEventListener('input', function(e) {
+            const value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                const formatted = 'R$ ' + parseInt(value).toLocaleString('pt-BR');
+                e.target.value = formatted;
+                updateSimulator(parseInt(value));
+            }
+        });
+
+        function updateSimulator(amount) {
+            const rate = 0.015; // 1.5%
+            const discount = amount * rate;
+            const received = amount - discount;
+            
+            document.querySelector('.simulator-title').textContent = `Adelantá R$ ${amount.toLocaleString('pt-BR')} en 7 días`;
+            document.querySelector('.value-amount').textContent = `R$${received.toLocaleString('pt-BR')}`;
+            document.querySelector('.simulator-content div:last-child').textContent = `Descuento R$${discount.toLocaleString('pt-BR')}`;
+        }
+    </script>
+</body>
+</html>

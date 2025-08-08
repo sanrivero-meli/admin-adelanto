@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L2 - Reglas de Automatización</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #1d1d1f;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #007aff;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e1e5e9;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rule-item {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .rule-item:hover {
+            border-color: #007aff;
+            box-shadow: 0 4px 15px rgba(0,122,255,0.1);
+        }
+
+        .rule-item.active {
+            border-color: #34c759;
+            background: #f0fff4;
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .rule-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #e1e5e9;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #34c759;
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(22px);
+        }
+
+        .rule-content {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .rule-condition {
+            margin-bottom: 10px;
+        }
+
+        .rule-text {
+            font-size: 0.95rem;
+            color: #424245;
+            line-height: 1.5;
+        }
+
+        .rule-text strong {
+            color: #1d1d1f;
+            font-weight: 600;
+        }
+
+        .edit-button {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .edit-button:hover {
+            background: #0056b3;
+        }
+
+        .customization-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .customization-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30px;
+            width: 100px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            transform: rotate(15deg);
+        }
+
+        .customization-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .custom-rule-form {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: white;
+        }
+
+        .add-rule-button {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-rule-button:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e1e5e9;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #007aff;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="l1-main.html" class="back-link">← Volver a L1</a>
+            <h1>⚙️ Reglas de Automatización</h1>
+        </div>
+
+        <!-- Statistics -->
+        <div class="card">
+            <div class="section-title">
+                <span>📊</span>
+                <span>Estadísticas de automatización</span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Reglas activas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Efectividad</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">R$ 45K</div>
+                    <div class="stat-label">Adelantos automáticos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Existing Rules -->
+        <div class="card">
+            <div class="section-title">
+                <span>📋</span>
+                <span>Reglas configuradas</span>
+            </div>
+
+            <div class="rule-item active">
+                <div class="rule-header">
+                    <span class="rule-name">Emergencia crítica</span>
+                    <div class="toggle-switch active" onclick="toggleRule(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div class="rule-content">
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Se:</strong> saldo negativo en 48h
+                        </div>
+                    </div>
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Entonces:</strong> Adelantar el mínimo necesario
+                        </div>
+                    </div>
+                </div>
+                <button class="edit-button" onclick="editRule()">Editar regla</button>
+            </div>
+
+            <div class="rule-item active">
+                <div class="rule-header">
+                    <span class="rule-name">Oportunidad de tasa</span>
+                    <div class="toggle-switch active" onclick="toggleRule(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div class="rule-content">
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Se:</strong> tasa menor a 1,5%
+                        </div>
+                    </div>
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Entonces:</strong> Sugerir adelanto
+                        </div>
+                    </div>
+                </div>
+                <button class="edit-button" onclick="editRule()">Editar regla</button>
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-header">
+                    <span class="rule-name">Pagamento programado</span>
+                    <div class="toggle-switch" onclick="toggleRule(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div class="rule-content">
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Se:</strong> hay una cuenta que vence en 3 días
+                        </div>
+                    </div>
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Entonces:</strong> Adelantar valor de la cuenta
+                        </div>
+                    </div>
+                </div>
+                <button class="edit-button" onclick="editRule()">Editar regla</button>
+            </div>
+        </div>
+
+        <!-- Custom Rule Creation -->
+        <div class="card customization-section">
+            <div class="customization-content">
+                <div class="section-title">
+                    <span>✨</span>
+                    <span>Personaliza tu regla</span>
+                </div>
+
+                <div class="custom-rule-form">
+                    <div class="form-row">
+                        <label class="form-label">Nombre de la regla:</label>
+                        <input type="text" class="form-input" placeholder="Ej: Mi regla personalizada" id="ruleName">
+                    </div>
+                    
+                    <div class="form-row">
+                        <label class="form-label">Se:</label>
+                        <input type="text" class="form-input" placeholder="Condición que activa la regla" id="ruleCondition">
+                    </div>
+                    
+                    <div class="form-row">
+                        <label class="form-label">Entonces:</label>
+                        <input type="text" class="form-input" placeholder="Acción a realizar" id="ruleAction">
+                    </div>
+                </div>
+
+                <button class="add-rule-button" onclick="addCustomRule()">
+                    <span>+</span>
+                    <span>Nueva regla</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="card">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="edit-button" onclick="goToL1()" style="flex: 1; padding: 15px; font-size: 1rem;">
+                    ← Volver a Simulador
+                </button>
+                <button class="edit-button" onclick="goToIndex()" style="flex: 1; padding: 15px; font-size: 1rem; background: #6c757d;">
+                    🏠 Hub Principal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleRule(element) {
+            element.classList.toggle('active');
+            const ruleItem = element.closest('.rule-item');
+            
+            if (element.classList.contains('active')) {
+                ruleItem.classList.add('active');
+                showToast('Regla activada', 'success');
+            } else {
+                ruleItem.classList.remove('active');
+                showToast('Regla desactivada', 'info');
+            }
+            
+            updateStats();
+        }
+
+        function editRule() {
+            showToast('Funcionalidad de edición en desarrollo', 'info');
+        }
+
+        function addCustomRule() {
+            const name = document.getElementById('ruleName').value;
+            const condition = document.getElementById('ruleCondition').value;
+            const action = document.getElementById('ruleAction').value;
+
+            if (!name || !condition || !action) {
+                showToast('Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            // Create new rule element
+            const rulesContainer = document.querySelector('.card:nth-child(3)');
+            const newRule = document.createElement('div');
+            newRule.className = 'rule-item active';
+            newRule.innerHTML = `
+                <div class="rule-header">
+                    <span class="rule-name">${name}</span>
+                    <div class="toggle-switch active" onclick="toggleRule(this)">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+                <div class="rule-content">
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Se:</strong> ${condition}
+                        </div>
+                    </div>
+                    <div class="rule-condition">
+                        <div class="rule-text">
+                            <strong>Entonces:</strong> ${action}
+                        </div>
+                    </div>
+                </div>
+                <button class="edit-button" onclick="editRule()">Editar regla</button>
+            `;
+
+            rulesContainer.insertBefore(newRule, rulesContainer.lastElementChild);
+
+            // Clear form
+            document.getElementById('ruleName').value = '';
+            document.getElementById('ruleCondition').value = '';
+            document.getElementById('ruleAction').value = '';
+
+            showToast('Nueva regla creada exitosamente', 'success');
+            updateStats();
+        }
+
+        function updateStats() {
+            const activeRules = document.querySelectorAll('.rule-item.active').length;
+            document.querySelector('.stat-value').textContent = activeRules;
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#34c759' : type === 'error' ? '#ff3b30' : '#007aff'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideInRight 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function goToL1() {
+            window.location.href = 'l1-main.html';
+        }
+
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
