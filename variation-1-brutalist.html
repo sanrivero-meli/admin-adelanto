@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brutalist Minimal - Adelanto</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Grotesk:wght@400;600;800&display=swap');
+        
+        :root {
+            /* Brutalist Minimal Palette */
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #666666;
+            --accent-primary: #ffffff;
+            --accent-secondary: #ff3333;
+            --accent-tertiary: #33ff33;
+            --border: #333333;
+            --shadow: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.2;
+        }
+
+        /* Brutalist Header */
+        .brutalist-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: var(--bg-primary);
+            border-bottom: 3px solid var(--accent-primary);
+            padding: 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .step-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Main Container */
+        .brutalist-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+            min-height: 100vh;
+        }
+
+        /* Flow Steps */
+        .flow-step {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .flow-step.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Step 1: Amount Input */
+        .amount-section {
+            margin-bottom: 60px;
+        }
+
+        .brutalist-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 0.9;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        .brutalist-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Grid Layout */
+        .brutalist-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .brutalist-card {
+            background: var(--bg-secondary);
+            border: 3px solid var(--border);
+            padding: 40px;
+            position: relative;
+        }
+
+        .brutalist-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        /* Amount Input */
+        .amount-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 4px solid var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+
+        /* Simulator */
+        .brutalist-simulator {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 3px solid var(--accent-primary);
+        }
+
+        .simulator-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .metrics-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-box {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .simulator-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Buttons */
+        .brutalist-btn {
+            background: var(--bg-primary);
+            color: var(--accent-primary);
+            border: 3px solid var(--accent-primary);
+            padding: 20px 40px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brutalist-btn:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
+        .brutalist-btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+
+        .brutalist-btn-secondary:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .brutalist-btn-danger {
+            border-color: var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+
+        .brutalist-btn-danger:hover {
+            background: var(--accent-secondary);
+            color: var(--bg-primary);
+        }
+
+        /* Automation Cards */
+        .automation-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .auto-rule {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            padding: 25px;
+            transition: border-color 0.2s ease;
+        }
+
+        .auto-rule.active {
+            border-color: var(--accent-tertiary);
+        }
+
+        .rule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .rule-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rule-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: var(--accent-tertiary);
+            color: var(--bg-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rule-status.inactive {
+            background: var(--border);
+            color: var(--text-muted);
+        }
+
+        .rule-description {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Bottom Sheet */
+        .brutalist-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .brutalist-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .brutalist-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border-top: 5px solid var(--accent-primary);
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+            padding: 40px;
+        }
+
+        .brutalist-sheet.active {
+            transform: translateY(0);
+        }
+
+        .sheet-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+
+        /* Impact Grid */
+        .impact-grid {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .impact-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 30px;
+        }
+
+        .impact-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .impact-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .impact-label {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .impact-value {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .impact-value.negative {
+            color: var(--accent-secondary);
+        }
+
+        .impact-value.positive {
+            color: var(--accent-tertiary);
+        }
+
+        /* Timeline */
+        .timeline-section {
+            margin-bottom: 40px;
+        }
+
+        .timeline {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-day {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .timeline-amount {
+            font-weight: 600;
+        }
+
+        .timeline-amount.positive {
+            color: var(--accent-tertiary);
+        }
+
+        .timeline-amount.negative {
+            color: var(--accent-secondary);
+        }
+
+        .timeline-item.critical {
+            background: var(--bg-tertiary);
+            border-left: 5px solid var(--accent-secondary);
+        }
+
+        /* Action Buttons */
+        .action-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Success State */
+        .success-section {
+            text-align: center;
+            padding: 80px 40px;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+        }
+
+        .success-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .success-description {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .stat-item {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .brutalist-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .brutalist-title {
+                font-size: 3rem;
+            }
+            
+            .amount-input {
+                font-size: 2rem;
+            }
+            
+            .metrics-display {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .action-row {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="brutalist-header">
+        <div class="header-content">
+            <div class="logo">ADELANTO</div>
+            <div class="step-counter">STEP <span id="currentStep">01</span> / 03</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="brutalist-container">
+        <!-- Step 1: Amount Input -->
+        <div id="step-1" class="flow-step active">
+            <div class="amount-section">
+                <h1 class="brutalist-title">¿CUÁNTO<br>NECESITAS?</h1>
+                <p class="brutalist-subtitle">INGRESA EL MONTO Y SIMULA ESCENARIOS</p>
+            </div>
+
+            <div class="brutalist-grid">
+                <div class="brutalist-card">
+                    <div class="card-title">SIMULADOR ADELANTO</div>
+                    
+                    <input type="text" id="amountInput" class="amount-input" placeholder="R$ 15.000" value="R$ 15.000">
+                    
+                    <div class="brutalist-simulator">
+                        <div class="simulator-title">ADELANTÁ R$ 15.000 EN 7 DÍAS</div>
+                        <div class="metrics-display">
+                            <div class="metric-box">
+                                <div class="metric-label">RECIBÍS</div>
+                                <div class="metric-value">R$ 14.800</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-label">TASA</div>
+                                <div class="metric-value">1,5%</div>
+                            </div>
+                        </div>
+                        <div class="simulator-note">DESCUENTO: R$ 200</div>
+                    </div>
+
+                    <button class="brutalist-btn" onclick="showBottomSheet()" style="width: 100%;">
+                        ADELANTAR
+                    </button>
+                </div>
+
+                <div class="brutalist-card">
+                    <div class="card-title">AUTOMATIZACIÓN ACTIVA</div>
+                    
+                    <div class="automation-list">
+                        <div class="auto-rule active">
+                            <div class="rule-header">
+                                <span class="rule-name">EMERGENCIAS</span>
+                                <span class="rule-status">ACTIVA</span>
+                            </div>
+                            <div class="rule-description">
+                                ADELANTA AUTOMÁTICAMENTE CUANDO SE DETECTE SALDO NEGATIVO EN 48H
+                            </div>
+                        </div>
+
+                        <div class="auto-rule active">
+                            <div class="rule-header">
+                                <span class="rule-name">OPORTUNIDADES</span>
+                                <span class="rule-status">ACTIVA</span>
+                            </div>
+                            <div class="rule-description">
+                                NOTIFICA CUANDO HAY TASAS FAVORABLES PARA ADELANTOS
+                            </div>
+                        </div>
+
+                        <div class="auto-rule">
+                            <div class="rule-header">
+                                <span class="rule-name">PAGOS PROGRAMADOS</span>
+                                <span class="rule-status inactive">INACTIVA</span>
+                            </div>
+                            <div class="rule-description">
+                                ADELANTA AUTOMÁTICAMENTE PARA CUBRIR PAGOS PROGRAMADOS
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="brutalist-btn brutalist-btn-secondary" onclick="goToStep(2)" style="width: 100%; margin-top: 30px;">
+                        CONFIGURAR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Configuration -->
+        <div id="step-2" class="flow-step">
+            <div class="amount-section">
+                <h1 class="brutalist-title">CONFIGURA<br>AUTOMATIZACIÓN</h1>
+                <p class="brutalist-subtitle">DEFINE LAS REGLAS DE TU SISTEMA</p>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="automation-list" style="gap: 30px;">
+                    <div class="brutalist-card">
+                        <div class="card-title">EMERGENCIA CRÍTICA</div>
+                        <div class="rule-description" style="margin-bottom: 20px;">
+                            SE: SALDO NEGATIVO PROYECTADO EN 48H<br>
+                            ENTONCES: ADELANTAR AUTOMÁTICAMENTE EL MÍNIMO NECESARIO
+                        </div>
+                        <button class="brutalist-btn brutalist-btn-danger" style="width: 100%;">
+                            ACTIVA
+                        </button>
+                    </div>
+
+                    <div class="brutalist-card">
+                        <div class="card-title">OPORTUNIDAD DE TASA</div>
+                        <div class="rule-description" style="margin-bottom: 20px;">
+                            SE: TASA DISPONIBLE MENOR A 1,5%<br>
+                            ENTONCES: NOTIFICAR OPORTUNIDAD DE ADELANTO
+                        </div>
+                        <button class="brutalist-btn brutalist-btn-danger" style="width: 100%;">
+                            ACTIVA
+                        </button>
+                    </div>
+
+                    <div class="brutalist-card">
+                        <div class="card-title">PAGAMENTO PROGRAMADO</div>
+                        <div class="rule-description" style="margin-bottom: 20px;">
+                            SE: CUENTA POR VENCER EN 3 DÍAS SIN SALDO<br>
+                            ENTONCES: ADELANTAR VALOR EXACTO DE LA CUENTA
+                        </div>
+                        <button class="brutalist-btn brutalist-btn-secondary" style="width: 100%;">
+                            INACTIVA
+                        </button>
+                    </div>
+                </div>
+
+                <div class="action-row" style="margin-top: 60px;">
+                    <button class="brutalist-btn brutalist-btn-secondary" onclick="goToStep(1)" style="flex: 1;">
+                        VOLVER
+                    </button>
+                    <button class="brutalist-btn" onclick="showBottomSheet()" style="flex: 2;">
+                        CONTINUAR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Success -->
+        <div id="step-3" class="flow-step">
+            <div class="success-section">
+                <div class="success-icon">✓</div>
+                <h1 class="success-title">ADELANTO<br>CONFIRMADO</h1>
+                <p class="success-description">
+                    TU ADELANTO DE R$ 15.000 HA SIDO PROCESADO EXITOSAMENTE.<br>
+                    EL SISTEMA ESTÁ MONITOREANDO TU FLUJO DE CAJA.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">R$ 14.800</div>
+                        <div class="stat-label">MONTO RECIBIDO</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">02</div>
+                        <div class="stat-label">REGLAS ACTIVAS</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">07</div>
+                        <div class="stat-label">DÍAS MONITOREO</div>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="brutalist-btn" onclick="restart()" style="flex: 1;">
+                        NUEVO ADELANTO
+                    </button>
+                    <button class="brutalist-btn brutalist-btn-secondary" onclick="goToStep(2)" style="flex: 1;">
+                        AJUSTAR REGLAS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Sheet -->
+    <div class="brutalist-overlay" id="overlay" onclick="hideBottomSheet()"></div>
+    <div class="brutalist-sheet" id="bottomSheet">
+        <h2 class="sheet-title">CONFIRMAR R$ 15.000</h2>
+
+        <div class="impact-grid">
+            <div class="impact-card">
+                <div class="impact-title">IMPACTO DEL FLUJO DE CAJA</div>
+                <div class="impact-row">
+                    <span class="impact-label">MONTO SOLICITADO:</span>
+                    <span class="impact-value">R$ 15.000</span>
+                </div>
+                <div class="impact-row">
+                    <span class="impact-label">TASA APLICADA:</span>
+                    <span class="impact-value">1,5%</span>
+                </div>
+                <div class="impact-row">
+                    <span class="impact-label">DESCUENTO:</span>
+                    <span class="impact-value negative">-R$ 200</span>
+                </div>
+                <div class="impact-row" style="border-top: 2px solid var(--border); padding-top: 15px; margin-top: 15px;">
+                    <span class="impact-label">RECIBIRÁS:</span>
+                    <span class="impact-value positive">R$ 14.800</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-section">
+            <div class="impact-card">
+                <div class="impact-title">PRÓXIMOS 7 DÍAS - PREVISIÓN</div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-day">HOJE</span>
+                        <span class="timeline-amount positive">+R$ 800</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-day">AMANHÃ</span>
+                        <span class="timeline-amount positive">+R$ 600</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-day">QUINTA</span>
+                        <span class="timeline-amount negative">-R$ 2.000</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-day">SEXTA</span>
+                        <span class="timeline-amount negative">-R$ 1.000</span>
+                    </div>
+                    <div class="timeline-item critical">
+                        <span class="timeline-day">SEGUNDA</span>
+                        <span class="timeline-amount negative">-R$ 500</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <button class="brutalist-btn brutalist-btn-secondary" onclick="hideBottomSheet()" style="flex: 1;">
+                CANCELAR
+            </button>
+            <button class="brutalist-btn" onclick="confirmAdelanto()" style="flex: 2;">
+                CONFIRMAR
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function goToStep(step) {
+            document.querySelectorAll('.flow-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            document.getElementById('currentStep').textContent = step.toString().padStart(2, '0');
+            currentStep = step;
+        }
+
+        function showBottomSheet() {
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('bottomSheet').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideBottomSheet() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('bottomSheet').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function confirmAdelanto() {
+            hideBottomSheet();
+            setTimeout(() => goToStep(3), 300);
+        }
+
+        function restart() {
+            goToStep(1);
+        }
+
+        // Amount input formatting
+        document.getElementById('amountInput').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                const formatted = 'R$ ' + parseInt(value).toLocaleString('pt-BR');
+                e.target.value = formatted;
+            }
+        });
+    </script>
+</body>
+</html>
